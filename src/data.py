@@ -6,7 +6,7 @@
 import torch
 from torch.utils.data import DataLoader, Dataset
 from transformers import BertTokenizer
-from datasets import load_dataset, concatinate_datasets
+from datasets import load_dataset, concatenate_datasets
 import pytorch_lightning as pl
 import numpy as np
 
@@ -25,14 +25,14 @@ class IMDBDataModule(pl.LightningDataModule):
         test  = load_dataset("imdb", split="test")
        
         #combining preset train and test (initially 50/50)
-        full = concatinate_datasets([train,test]).shuffle(seed=42)
+        full = concatenate_datasets([train,test]).shuffle(seed=42)
         
         #t/v/t split 70/15/15
         total = len(full)
         train_size = int(0.7 * total)
         val_size   = int(0.15 * total)
         test_size  = total - train_size - val_size
-        splits = full_ds.train_test_split(
+        splits = full.train_test_split(
             train_size=train_size, 
             test_size=val_size + test_size,
             seed=42
@@ -42,3 +42,27 @@ class IMDBDataModule(pl.LightningDataModule):
         val_test_splits = temp_dataset.train_test_split(test_size=test_size, seed=42)
         self.val_dataset = val_test_splits['train']
         self.test_dataset = val_test_splits['test']
+
+        def setup(self, stage=None):
+        # We simply call your custom method here
+        if self.train_dataset is None:
+            self.download_and_split()
+
+    def train_dataloader(self):
+        return DataLoader(
+            IMDBDataset(self.train_dataset, self.tokenizer, self.max_length),
+            batch_size=self.batch_size, 
+            shuffle=True, 
+            num_workers=2)
+
+    def val_dataloader(self):
+        return DataLoader(
+            IMDBDataset(self.val_dataset, self.tokenizer, self.max_length),
+            batch_size=self.batch_size, 
+            num_workers=2)
+
+    def test_dataloader(self):
+        return DataLoader(
+            IMDBDataset(self.test_dataset, self.tokenizer, self.max_length),
+            batch_size=self.batch_size, 
+            num_workers=2)

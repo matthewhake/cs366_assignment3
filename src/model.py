@@ -127,5 +127,5 @@ class IMDBBiLSTM(pl.LightningModule):
 
     def configure_optimizers(self) -> Any:
         #Use Adam or AdamW as required by prof chen
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.hparams.lr)
+        optimizer = torch.optim.AdamW(self.parameters(), lr=self.hparams.lr)
         return optimizer

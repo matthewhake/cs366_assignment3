@@ -5,14 +5,15 @@
 """
 SEED = 42
 import pytorch_lightning as pl
+import torch
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
-from data import IMDBDataset
+from data import IMDBDataModule
 from model import IMDBBiLSTM
 
 def main():
-    dm = IMDBDataset(batch_size=32,max_length=256)
+    dm = IMDBDataModule(batch_size=32,max_length=256)
     dm.prepare_data()
     dm.setup()
 
@@ -31,7 +32,7 @@ def main():
     )
 
     trainer = pl.Trainer(
-        max_epochs=5,
+        max_epochs=10,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
         callbacks=[checkpoint]
     )

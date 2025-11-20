@@ -81,6 +81,9 @@ class IMDBDataModule(pl.LightningDataModule):
         if self.train_dataset is None:
             self.download_and_split()
 
+        self.vocab_size = self.tokenizer.vocab_size
+        self.pad_idx = self.tokenizer.pad_token_id
+
     def train_dataloader(self):
         return DataLoader(
             IMDBDataset(self.train_dataset, self.tokenizer, self.max_length),

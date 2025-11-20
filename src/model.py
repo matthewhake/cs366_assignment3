@@ -100,7 +100,6 @@ class IMDBBiLSTM(pl.LightningModule):
 
     def training_step(self, batch: Dict[str, torch.Tensor], batch_idx: int) -> torch.Tensor:
         return self._step(batch, stage="train")
-
     def validation_step(self, batch: Dict[str, torch.Tensor], batch_idx: int) -> None:
         self._step(batch, stage="val")
 
@@ -108,6 +107,6 @@ class IMDBBiLSTM(pl.LightningModule):
         self._step(batch, stage="test")
 
     def configure_optimizers(self) -> Any:
-        """Use Adam or AdamW as required by the assignment."""
+        #Use Adam or AdamW as required by prof chen
         optimizer = torch.optim.Adam(self.parameters(), lr=self.hparams.lr)
         return optimizer

@@ -16,6 +16,13 @@ from torch import nn
 import pytorch_lightning as pl
 
 
+
+#structure of this class follows the recommended PyTorch Lightning pattern:
+# 1. computations in __init__
+# 2. training_step /validation_step /test_step
+# 3. configure_optimizers for optimizer definition
+#Source: https://lightning.ai/docs/pytorch/LTS/common/lightning_module.html
+
 class IMDBBiLSTM(pl.LightningModule):
     def __init__(
         self,
@@ -28,6 +35,12 @@ class IMDBBiLSTM(pl.LightningModule):
         lr: float = 1e-3,
     ) -> None:
 
+
+        #we use a trainable nn.Embedding with the BERT tokenizer vocabulary
+        #(vocab_size, pad_idx) and a bidirectional LSTM for sentencelevel
+        #example Bi-LSTM sentiment model (embedding + bidirectional LSTM): https://galhever.medium.com/sentiment-analysis-with-pytorch-part-4-lstm-bilstm-model-84447f6c4525
+
+        #Hugging Face tokenizer docs (vocab_size, special tokens, pad token): https://huggingface.co/docs/transformers/main/main_classes/tokenizer
         super().__init__()
         self.save_hyperparameters()
 
@@ -57,6 +70,7 @@ class IMDBBiLSTM(pl.LightningModule):
         self.criterion = nn.CrossEntropyLoss()
 
     #FORWARD
+    #See typical PyTorch Bi-LSTM classification patterns: https://www.scaler.com/topics/pytorch/lstm-pytorch/
 
     def forward(self, input_ids: torch.Tensor) -> torch.Tensor:
         """
@@ -78,6 +92,11 @@ class IMDBBiLSTM(pl.LightningModule):
         logits = self.fc(final_repr)
 
         return logits
+    
+
+    #Step by step LightningModule tutorial using self.log:
+    #https://lightning.ai/pages/community/tutorial/step-by-step-walk-through-of-pytorch-lightning/
+
 
     def _step(self, batch: Dict[str, torch.Tensor], stage: str) -> torch.Tensor:
         #Shared logic for train/val/test steps 
@@ -96,10 +115,10 @@ class IMDBBiLSTM(pl.LightningModule):
 
         return loss
 
-    #lighting hooks 
-
+    #LIGHTNING HOOKSgit addgi
     def training_step(self, batch: Dict[str, torch.Tensor], batch_idx: int) -> torch.Tensor:
         return self._step(batch, stage="train")
+    
     def validation_step(self, batch: Dict[str, torch.Tensor], batch_idx: int) -> None:
         self._step(batch, stage="val")
 

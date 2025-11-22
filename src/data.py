@@ -1,7 +1,8 @@
 """
-@ Description: This main file to preprocess the data
-@ Authors: Matthew Hake, Ben Chidley, Garret Keyhani, Josh Smith 
-@ Create Time: 
+data.py
+Description: This main file to preprocess the data
+Authors: Matthew Hake, Ben Chidley, Garret Keyhani, Joshua Smith 
+Date: 11/21/2025
 """
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -28,7 +29,7 @@ class IMDBDataset(Dataset):
         text = row['text']
         label = row['label']
 
-        #cut if review is too long. Add blank space if review is too short
+        # Cut if review is too long. Add blank space if review is too short
         encoding = self.tokenizer(
             text,
             max_length=self.max_length,
@@ -54,14 +55,14 @@ class IMDBDataModule(pl.LightningDataModule):
         self.test_dataset = None
     
     def download_and_split(self):
-        #loading imdb dataset
+        # Loading imdb dataset
         train = load_dataset("imdb", split="train")
         test  = load_dataset("imdb", split="test")
        
-        #combining preset train and test (initially 50/50)
+        # Combining preset train and test (initially 50/50)
         full = concatenate_datasets([train,test]).shuffle(seed=42)
         
-        #t/v/t split 70/15/15
+        # t/v/t split 70/15/15
         total = len(full)
         train_size = int(0.7 * total)
         val_size   = int(0.15 * total)
@@ -70,7 +71,7 @@ class IMDBDataModule(pl.LightningDataModule):
             train_size=train_size, 
             test_size=val_size + test_size,
             seed=42
-            )
+        )
         self.train_dataset = splits['train']
         temp_dataset = splits['test']
         val_test_splits = temp_dataset.train_test_split(test_size=test_size, seed=42)

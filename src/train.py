@@ -1,9 +1,10 @@
-# train.py
 """
+train.py
 Description: This main file is used to train the model
-Authors: Matthew Hake, Ben Chidley, Garret Keyhani, Josh Smith 
-Date: 11/21/25
+Authors: Matthew Hake, Ben Chidley, Garret Keyhani, Joshua Smith 
+Date: 11/21/2025
 """
+
 SEED = 42
 import json
 import os
@@ -61,7 +62,6 @@ def evaluate_and_save_examples(model: IMDBBiLSTM, dm: IMDBDataModule, ckpt_path:
 
     all_labels = labels 
     all_texts = texts
-
 
     acc = accuracy_score(all_labels, all_preds)
     cm = confusion_matrix(all_labels, all_preds)

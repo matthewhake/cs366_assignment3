@@ -1,8 +1,8 @@
 # train.py
 """
-@ Description: This main file is used to train the model (with W&B logging)
-@ Authors: Matthew Hake, Ben Chidley, Garret Keyhani, Josh Smith
-@ Create Time:
+Description: This main file is used to train the model
+Authors: Matthew Hake, Ben Chidley, Garret Keyhani, Josh Smith 
+Date: 11/21/25
 """
 SEED = 42
 import json

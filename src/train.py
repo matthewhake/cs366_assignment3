@@ -18,8 +18,6 @@ from sklearn.metrics import confusion_matrix, classification_report, accuracy_sc
 from data import IMDBDataModule
 from model import IMDBBiLSTM
 
-
-
 def evaluate_and_save_examples(model: IMDBBiLSTM, dm: IMDBDataModule, ckpt_path: str = "best", device: str = None):
 
     ckpt_file = ckpt_path
